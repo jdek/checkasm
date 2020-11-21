@@ -1,10 +1,9 @@
-Why? Procrastinating...
-
 This will probably evolve over time to be a full suite of checked NEON assembly
 functions.
 
-Output
-------
+========
+chacha20
+========
 
 c:    39.51800 msec (39518 clocks)
 neon: 4.525000 msec (4525 clocks)

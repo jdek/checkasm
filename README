@@ -1,0 +1,11 @@
+Why? Procrastinating...
+
+This will probably evolve over time to be a full suite of checked NEON assembly
+functions.
+
+Output
+------
+
+c:    39.51800 msec (39518 clocks)
+neon: 4.525000 msec (4525 clocks)
+That's a 8.73x speedup!

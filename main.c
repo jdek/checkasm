@@ -81,7 +81,7 @@ void chacha20_block_c(uint32_t s[16])
 
 int chacha20_random(void (*block_func)(uint32_t *), uint8_t k[32], uint8_t n[12], uint8_t *out, size_t bytes)
 {
-    uint32_t state[16] = {
+    __attribute__((aligned(128))) uint32_t state[16] = {
         // this is wiped by chacha20_setup()
         1634760805,  857760878, 2036477234, 1797285236,
         2058694467, 2612546140, 1163293007,  104192297,
@@ -92,12 +92,11 @@ int chacha20_random(void (*block_func)(uint32_t *), uint8_t k[32], uint8_t n[12]
     chacha20_setup(state, k, n, 1);
 
     while (bytes > 0) {
-        int len = (bytes > 64) ? 64 : bytes;
         block_func(state);
-        if (out)
-          memcpy(out, state, len);
-        bytes -= len;
+        bytes -= 64;
     }
+    if (out)
+        memcpy(out, state, 64);
 
     return 0;
 }
@@ -129,11 +128,11 @@ int main(void)
     // bench 16384 blocks
 
     time_c = clock();
-    chacha20_random(chacha20_block_c, k, n, NULL, 64 * 16384);
+    chacha20_random(chacha20_block_c, k, n, NULL, 64 * 16384 * 100);
     time_c = clock() - time_c;
 
     time_asm = clock();
-    chacha20_random(chacha20_block_neon, k, n, NULL, 64 * 16384);
+    chacha20_random(chacha20_block_neon, k, n, NULL, 64 * 16384 * 100);
     time_asm = clock() - time_asm;
 
     msec_c = ((double)time_c) / (CLOCKS_PER_SEC / 1000);

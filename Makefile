@@ -6,11 +6,11 @@ obj/%.o: %.S
 
 obj/%.o: %.c
 	@mkdir -p $(dir $(@))
-	cc -g -c -o $@ $^
+	cc -O3 -g -c -o $@ $^
 
 
 program: obj/main.o obj/sandbox.o
 	cc -o $@ $^
 
 clean:
-	rm -f obj program
+	rm -rf obj program

@@ -36,8 +36,7 @@ function chacha20_block_neon, export=1
 
     // 8x quarter rounds, x10
     mov x1, #10
-.double_round:
-    add  v0.4S,   v0.4S,   v1.4S
+0:  add  v0.4S,   v0.4S,   v1.4S
     eor  v16.16B, v3.16B, v0.16B
     ushr v3.4S,  v16.4S, #16
     sli  v3.4S,  v16.4S, #16
@@ -88,10 +87,12 @@ function chacha20_block_neon, export=1
     ext v3.16b, v3.16b, v3.16b, #4
 
     subs x1, x1, #1
-    bne .double_round
+    bne 0b
 
     add v0.4S, v0.4S, v4.4S
     add v1.4S, v1.4S, v5.4S
     add v2.4S, v2.4S, v6.4S
     add v3.4S, v3.4S, v7.4S
     st1 {v0.4S-v3.4S}, [x0]
+
+    ret

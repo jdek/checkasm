@@ -104,7 +104,7 @@ int chacha20_random(void (*block_func)(uint32_t *), uint8_t k[32], uint8_t n[12]
 int main(void)
 {
     clock_t time_asm, time_c;
-    double msec_asm, msec_c;
+    double msec_asm, msec_c, speedup;
 
     uint8_t k[32] = {0};
     uint8_t n[12] = {0};
@@ -137,13 +137,15 @@ int main(void)
 
     msec_c = ((double)time_c) / (CLOCKS_PER_SEC / 1000);
     msec_asm = ((double)time_asm) / (CLOCKS_PER_SEC / 1000);
+    speedup = ((double)time_c / (double)time_asm);
 
     printf("c:    %f msec (%ld clocks)\n"
            "neon: %f msec (%ld clocks)\n"
-           "That's a %.2fx speedup!\n",
+           "That's a %.2f%% %s\n",
            msec_c, time_c,
            msec_asm, time_asm,
-           ((double)time_c / (double)time_asm));
+           100.0f * ((speedup >= 1.0f) ? speedup - 1.0f : 1.0f - speedup),
+           (speedup >= 1.0f) ? "speedup!" : "slow down...");
 
     return 0;
 }
